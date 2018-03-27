@@ -1,0 +1,372 @@
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+--
+-- Host: 127.0.0.1    Database: graduation
+-- ------------------------------------------------------
+-- Server version	5.6.39-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `authority_log`
+--
+
+DROP TABLE IF EXISTS `authority_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `authority_log` (
+  `no` int(11) NOT NULL,
+  `laboratory_no` int(11) NOT NULL,
+  `manager_no` int(11) NOT NULL,
+  `before_holder` int(11) DEFAULT NULL,
+  `after_holder` int(11) DEFAULT NULL,
+  `change_time` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`laboratory_no`,`manager_no`,`no`),
+  KEY `fk_Authority_log_Laboratory2_idx` (`manager_no`),
+  CONSTRAINT `fk_Authority_log_Laboratory1` FOREIGN KEY (`laboratory_no`) REFERENCES `laboratory` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Authority_log_Laboratory2` FOREIGN KEY (`manager_no`) REFERENCES `manager` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `authority_log`
+--
+
+LOCK TABLES `authority_log` WRITE;
+/*!40000 ALTER TABLE `authority_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `authority_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `laboratory`
+--
+
+DROP TABLE IF EXISTS `laboratory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `laboratory` (
+  `no` int(11) NOT NULL,
+  `manager_no` int(11) NOT NULL,
+  `holder` int(11) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `logNumber` int(11) DEFAULT NULL,
+  PRIMARY KEY (`no`,`manager_no`),
+  KEY `fk_Laboratory_Manager1_idx` (`manager_no`),
+  CONSTRAINT `fk_Laboratory_Manager1` FOREIGN KEY (`manager_no`) REFERENCES `manager` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `laboratory`
+--
+
+LOCK TABLES `laboratory` WRITE;
+/*!40000 ALTER TABLE `laboratory` DISABLE KEYS */;
+INSERT INTO `laboratory` VALUES (318,1,2012150001,1,1),(319,2,2012150002,1,2),(517,3,2012150003,0,0);
+/*!40000 ALTER TABLE `laboratory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `laboratory_log`
+--
+
+DROP TABLE IF EXISTS `laboratory_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `laboratory_log` (
+  `no` int(11) NOT NULL,
+  `laboratory_no` int(11) NOT NULL,
+  `open` varchar(30) DEFAULT NULL,
+  `opener` int(11) DEFAULT NULL,
+  `close` varchar(30) DEFAULT NULL,
+  `closer` int(11) DEFAULT NULL,
+  `authority_change` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`no`,`laboratory_no`),
+  KEY `fk_Laboratory_log_Laboratory1_idx` (`laboratory_no`),
+  CONSTRAINT `fk_Laboratory_log_Laboratory1` FOREIGN KEY (`laboratory_no`) REFERENCES `laboratory` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `laboratory_log`
+--
+
+LOCK TABLES `laboratory_log` WRITE;
+/*!40000 ALTER TABLE `laboratory_log` DISABLE KEYS */;
+INSERT INTO `laboratory_log` VALUES (1,318,NULL,NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `laboratory_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `manager`
+--
+
+DROP TABLE IF EXISTS `manager`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `manager` (
+  `no` int(11) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `responsibility` varchar(20) DEFAULT NULL,
+  `id` varchar(20) DEFAULT NULL,
+  `pw` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `manager`
+--
+
+LOCK TABLES `manager` WRITE;
+/*!40000 ALTER TABLE `manager` DISABLE KEYS */;
+INSERT INTO `manager` VALUES (1,'jaewook','computer','jjer77','1234'),(2,'minchan','computer','c','d'),(3,'jongchan','computer','e','f'),(4,'llss','computer','g','h');
+/*!40000 ALTER TABLE `manager` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `member`
+--
+
+DROP TABLE IF EXISTS `member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `member` (
+  `student_no` int(11) NOT NULL,
+  `rental_no` int(11) NOT NULL,
+  `leader` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`student_no`,`rental_no`),
+  KEY `fk_Member_Rental1_idx` (`rental_no`),
+  CONSTRAINT `fk_Member_Rental1` FOREIGN KEY (`rental_no`) REFERENCES `rental` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Member_Student` FOREIGN KEY (`student_no`) REFERENCES `student` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member`
+--
+
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `professor`
+--
+
+DROP TABLE IF EXISTS `professor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `professor` (
+  `no` int(11) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `major` varchar(20) DEFAULT NULL,
+  `id` varchar(20) DEFAULT NULL,
+  `pw` varchar(20) DEFAULT NULL,
+  `second_pw` varchar(20) DEFAULT NULL,
+  `fingerprint` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `professor`
+--
+
+LOCK TABLES `professor` WRITE;
+/*!40000 ALTER TABLE `professor` DISABLE KEYS */;
+/*!40000 ALTER TABLE `professor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `professor_list`
+--
+
+DROP TABLE IF EXISTS `professor_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `professor_list` (
+  `professor_no` int(11) NOT NULL,
+  `subject_no` int(11) NOT NULL,
+  PRIMARY KEY (`professor_no`,`subject_no`),
+  KEY `fk_Professor_list_Subject_idx` (`subject_no`),
+  CONSTRAINT `fk_Professor_list_Professor` FOREIGN KEY (`professor_no`) REFERENCES `professor` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Professor_list_Subject` FOREIGN KEY (`subject_no`) REFERENCES `subject` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `professor_list`
+--
+
+LOCK TABLES `professor_list` WRITE;
+/*!40000 ALTER TABLE `professor_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `professor_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rental`
+--
+
+DROP TABLE IF EXISTS `rental`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rental` (
+  `no` int(11) NOT NULL,
+  `laboratory_no` int(11) NOT NULL,
+  `manager_no` int(11) NOT NULL,
+  `date` varchar(30) DEFAULT NULL,
+  `approval` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`no`,`laboratory_no`,`manager_no`),
+  KEY `fk_Rental_Laboratory1_idx` (`laboratory_no`),
+  KEY `fk_Rental_Laboratory2_idx` (`manager_no`),
+  CONSTRAINT `fk_Rental_Laboratory1` FOREIGN KEY (`laboratory_no`) REFERENCES `laboratory` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Rental_Laboratory2` FOREIGN KEY (`manager_no`) REFERENCES `manager` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rental`
+--
+
+LOCK TABLES `rental` WRITE;
+/*!40000 ALTER TABLE `rental` DISABLE KEYS */;
+INSERT INTO `rental` VALUES (1,1,8,NULL,12);
+/*!40000 ALTER TABLE `rental` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `student`
+--
+
+DROP TABLE IF EXISTS `student`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `student` (
+  `no` int(11) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `major` varchar(20) DEFAULT NULL,
+  `id` varchar(20) DEFAULT NULL,
+  `pw` varchar(20) DEFAULT NULL,
+  `second_pw` varchar(20) DEFAULT NULL,
+  `fingerprint` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student`
+--
+
+LOCK TABLES `student` WRITE;
+/*!40000 ALTER TABLE `student` DISABLE KEYS */;
+INSERT INTO `student` VALUES (11111,'joojaewook','computer','jjer77','abcd77','abcd88','bbbbg');
+/*!40000 ALTER TABLE `student` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `student_list`
+--
+
+DROP TABLE IF EXISTS `student_list`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `student_list` (
+  `student_no` int(11) NOT NULL,
+  `subject_no` int(11) NOT NULL,
+  PRIMARY KEY (`student_no`,`subject_no`),
+  KEY `fk_Student_list_Student1_idx` (`student_no`),
+  KEY `fk_Student_list_Subject1_idx` (`subject_no`),
+  CONSTRAINT `fk_Student_list_Student1` FOREIGN KEY (`student_no`) REFERENCES `student` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Student_list_Subject1` FOREIGN KEY (`subject_no`) REFERENCES `subject` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `student_list`
+--
+
+LOCK TABLES `student_list` WRITE;
+/*!40000 ALTER TABLE `student_list` DISABLE KEYS */;
+/*!40000 ALTER TABLE `student_list` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `subject`
+--
+
+DROP TABLE IF EXISTS `subject`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subject` (
+  `no` int(11) NOT NULL,
+  `name` varchar(45) DEFAULT NULL,
+  `date` varchar(30) DEFAULT NULL,
+  `laboratory_no` int(11) NOT NULL,
+  `professor_no` int(11) NOT NULL,
+  PRIMARY KEY (`no`,`laboratory_no`,`professor_no`),
+  KEY `fk_Subject_Professor_list1_idx` (`professor_no`),
+  KEY `fk_Subject_Laboratory1_idx` (`laboratory_no`),
+  CONSTRAINT `fk_Subject_Laboratory1` FOREIGN KEY (`laboratory_no`) REFERENCES `laboratory` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Subject_Professor` FOREIGN KEY (`professor_no`) REFERENCES `professor` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `subject`
+--
+
+LOCK TABLES `subject` WRITE;
+/*!40000 ALTER TABLE `subject` DISABLE KEYS */;
+/*!40000 ALTER TABLE `subject` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `trouble_report`
+--
+
+DROP TABLE IF EXISTS `trouble_report`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `trouble_report` (
+  `no` int(11) NOT NULL,
+  `time` varchar(30) DEFAULT NULL,
+  `item` varchar(45) DEFAULT NULL,
+  `content` varchar(45) DEFAULT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `handling` tinyint(4) DEFAULT NULL,
+  `laboratory_no` int(11) NOT NULL,
+  PRIMARY KEY (`no`,`laboratory_no`),
+  KEY `fk_Trouble_Report_Laboratory1_idx` (`laboratory_no`),
+  CONSTRAINT `fk_Trouble_Report_Laboratory1` FOREIGN KEY (`laboratory_no`) REFERENCES `laboratory` (`no`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `trouble_report`
+--
+
+LOCK TABLES `trouble_report` WRITE;
+/*!40000 ALTER TABLE `trouble_report` DISABLE KEYS */;
+/*!40000 ALTER TABLE `trouble_report` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-03-27 20:48:56
