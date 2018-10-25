@@ -1,0 +1,54 @@
+#include "SPI.h"
+#include "PN532_SPI.h"
+#include "snep.h"
+#include "NdefMessage.h"
+
+PN532_SPI pn532spi(SPI, 10);
+SNEP nfc(pn532spi);
+uint8_t ndefBuf[128];
+const int lockPin = 7; // 솔레노이드 문 잠금장치용 핀 번호
+String user="";
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(lockPin, OUTPUT); // 문 잠금장치 핀을 출력으로 설정
+  digitalWrite(lockPin, LOW); // 문을 잠그기 위해 LOW로 설정  
+}
+
+void loop() {
+    Serial.println("Waiting for message from Peer");
+    
+    int msgSize = nfc.read(ndefBuf, sizeof(ndefBuf));
+    
+    if (msgSize > 0) {   
+        NdefMessage message  = NdefMessage(ndefBuf, msgSize);
+        NdefRecord record = message.getRecord(0);
+
+       if (record.getTnf() == TNF_MIME_MEDIA && record.getType() == "Text") {
+         // 페이로드의 길이를 얻는다
+         int payloadLength = record.getPayloadLength();
+         byte payload[payloadLength]; // 페이로드를 가지고 있을 바이트 배열 생성
+         record.getPayload(payload);
+        
+         // 페이로드를 문자열로 변환
+         user = "";
+         for (int c=0; c< payloadLength; c++) {
+            user += (char)payload[c];
+         }
+
+         Serial.println("user = " + user);
+
+         if(user.equals("adminOpen")) {
+            digitalWrite(lockPin,HIGH);
+            Serial.println("Door Open");
+         }         
+         else if(user.equals("adminClose")) {
+            digitalWrite(lockPin,LOW);
+            Serial.println("Door Close");
+         }
+    }  
+    else {
+       Serial.println("There's no messages.");
+    }
+  }  
+}
